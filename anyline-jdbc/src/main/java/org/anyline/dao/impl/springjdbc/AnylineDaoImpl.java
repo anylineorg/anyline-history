@@ -108,11 +108,19 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 			if (run.isValid()) {
 				if(null != listener){
+<<<<<<< HEAD
 					listener.beforeQuery(this,run);
 				}
 				maps = maps(run.getFinalQueryTxt(), run.getValues());
 				if(null != listener){
 					listener.afterQuery(this,run, maps);
+=======
+					listener.beforeQuery(run);
+				}
+				maps = maps(run.getFinalQueryTxt(), run.getValues());
+				if(null != listener){
+					listener.afterQuery(run, maps);
+>>>>>>> origin/master
 				}
 			} else {
 				maps = new ArrayList<Map<String,Object>>();
@@ -170,11 +178,19 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 			if (run.isValid() && (null == navi || total > 0)) {
 				if(null != listener){
+<<<<<<< HEAD
 					listener.beforeQuery(this,run);
 				}
 				set = select(run.getFinalQueryTxt(), run.getValues());
 				if(null != listener){
 					listener.afterQuery(this,run,set);
+=======
+					listener.beforeQuery(run);
+				}
+				set = select(run.getFinalQueryTxt(), run.getValues());
+				if(null != listener){
+					listener.afterQuery(run,set);
+>>>>>>> origin/master
 				}
 			} else {
 				set = new DataSet();
@@ -217,11 +233,19 @@ public class AnylineDaoImpl implements AnylineDao {
 		try{
 			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
 			if(null != listener){
+<<<<<<< HEAD
 				listener.beforeCount(this,run);
 			}
 			count = getTotal(run.getTotalQueryTxt(), run.getValues());
 			if(null != listener){
 				listener.afterCount(this,run, count);
+=======
+				listener.beforeCount(run);
+			}
+			count = getTotal(run.getTotalQueryTxt(), run.getValues());
+			if(null != listener){
+				listener.afterCount(run, count);
+>>>>>>> origin/master
 			}
 		}finally{
 			//自动切换回默认数据源
@@ -251,7 +275,11 @@ public class AnylineDaoImpl implements AnylineDao {
 			/*执行SQL*/
 			try {
 				if(null != listener){
+<<<<<<< HEAD
 					listener.beforeExists(this,run);
+=======
+					listener.beforeExists(run);
+>>>>>>> origin/master
 				}
 				Map<String, Object> map = null;
 				if (null != values && values.size() > 0) {
@@ -265,7 +293,11 @@ public class AnylineDaoImpl implements AnylineDao {
 					result = BasicUtil.parseBoolean(map.get("IS_EXISTS"), false);
 				}
 				if(null != listener){
+<<<<<<< HEAD
 					listener.afterExists(this,run, result);
+=======
+					listener.afterExists(run, result);
+>>>>>>> origin/master
 				}
 				if (showSQL) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, System.currentTimeMillis() - fr, result);
@@ -337,6 +369,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		/*执行SQL*/
 		try{
+<<<<<<< HEAD
 			boolean listenerResult = true;
 			if(null != listener){
 				listenerResult = listener.beforeUpdate(this,run, dest, obj, columns);
@@ -349,6 +382,17 @@ public class AnylineDaoImpl implements AnylineDao {
 				if (showSQL) {
 					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", System.currentTimeMillis() - fr, result);
 				}
+=======
+			if(null != listener){
+				listener.beforeUpdate(run, dest, obj, columns);
+			}
+			result = getJdbc().update(sql, values.toArray());
+			if(null != listener){
+				listener.afterUpdate(run, result, dest, obj,columns);
+			}
+			if(showSQL){
+				log.warn(random + "[执行耗时:{}ms][影响行数:{}]",System.currentTimeMillis() - fr,result);
+>>>>>>> origin/master
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -450,6 +494,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			log.warn(random + "[参数:{}]",paramLogFormat(run.getInsertColumns(),values));
 		}
 		try{
+<<<<<<< HEAD
 			boolean listenerResult = true;
 			if(null != listener){
 				listenerResult = listener.beforeInsert(this,run, dest, data,checkParimary, columns);
@@ -483,6 +528,38 @@ public class AnylineDaoImpl implements AnylineDao {
 					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", System.currentTimeMillis() - fr, cnt);
 				}
 			}
+=======
+			if(null != listener){
+				listener.beforeInsert(run, dest, data,checkParimary, columns);
+			}
+			cnt= getJdbc().update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+					PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+					int idx = 0;
+					if(null != values){
+						for(Object obj:values){
+							ps.setObject(++idx, obj);
+						}
+					}
+					return ps;
+				}
+			}, keyholder);
+
+			if (cnt == 1) {
+				try{
+					int id = (int)keyholder.getKey().longValue();
+					setPrimaryValue(data, id);
+				}catch(Exception e){
+				}
+			}
+			if(null != listener){
+				listener.afterInsert(run, cnt, dest, data , checkParimary, columns);
+			}
+			if(showSQL){
+				log.warn(random + "[执行耗时:{}ms][影响行数:{}]",System.currentTimeMillis() - fr,cnt);
+			}
+>>>>>>> origin/master
 		}catch(Exception e){
 			e.printStackTrace();
 			if(showSQLWhenError){
@@ -543,6 +620,7 @@ public class AnylineDaoImpl implements AnylineDao {
 							while(true){
 								DataSet list = batchInsertStore.getDatas();
 								if(null != list && list.size()>0){
+<<<<<<< HEAD
 									boolean listenerResult = true;
 									if(null != listener){
 										listenerResult = listener.beforeBatchInsert(AnylineDaoImpl.this,dest, list, checkParimary, columns);
@@ -552,6 +630,14 @@ public class AnylineDaoImpl implements AnylineDao {
 										if (null != listener) {
 											listener.afterBatchInsert(AnylineDaoImpl.this, cnt, dest, list, checkParimary, columns);
 										}
+=======
+									if(null != listener){
+										listener.beforeBatchInsert(dest, list, checkParimary, columns);
+									}
+									int cnt =  insert(dest, list, checkParimary, columns);
+									if(null != listener){
+										listener.afterBatchInsert(cnt, dest, list, checkParimary, columns);
+>>>>>>> origin/master
 									}
 								}else{
 									Thread.sleep(1000*10);
@@ -702,6 +788,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			log.warn(random + "[参数:{}]",paramLogFormat(values));
 		}
 		try{
+<<<<<<< HEAD
 			boolean listenerResult = true;
 			if(null != listener){
 				listenerResult = listener.beforeExecute(this,run);
@@ -719,6 +806,22 @@ public class AnylineDaoImpl implements AnylineDao {
 				if (showSQL) {
 					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", System.currentTimeMillis() - fr, result);
 				}
+=======
+			if(null != listener){
+				listener.beforeExecute(run);
+			}
+			if(null != values && values.size() > 0){
+				result = getJdbc().update(txt, values.toArray());
+			}else{
+				result = getJdbc().update(txt);
+			}
+
+			if(null != listener){
+				listener.afterExecute(run, result);
+			}
+			if(showSQL){
+				log.warn(random + "[执行耗时:{}ms][影响行数:{}]",System.currentTimeMillis()-fr,result);
+>>>>>>> origin/master
 			}
 		}catch(Exception e){
 			log.error(random+":" + e);
@@ -851,6 +954,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			log.warn("{}[输出参数:{}]",random,paramLogFormat(outputs));
 		}
 		try{
+<<<<<<< HEAD
 			boolean listenerResult = true;
 			if(null != listener){
 				listenerResult = listener.beforeExecute(this,procedure);
@@ -906,6 +1010,60 @@ public class AnylineDaoImpl implements AnylineDao {
 					log.warn("{}[执行耗时:{}ms]", random, System.currentTimeMillis() - fr);
 					log.warn("{}[输出参数:{}]", random, list);
 				}
+=======
+			if(null != listener){
+				listener.beforeExecute(procedure);
+			}
+			list = (List<Object>)getJdbc().execute(sql,new CallableStatementCallback<Object>(){
+				public Object doInCallableStatement(final CallableStatement cs) throws SQLException, DataAccessException {
+					final List<Object> result = new ArrayList<Object>();
+
+					//带有返回参数
+					int returnIndex = 0;
+					if(procedure.hasReturn()){
+						returnIndex = 1;
+						cs.registerOutParameter(1, Types.VARCHAR);
+					}
+					for(int i=1; i<=sizeIn; i++){
+						ProcedureParam param = inputs.get(i-1);
+						Object value = param.getValue();
+						if(null == value || "NULL".equalsIgnoreCase(value.toString())){
+							value = null;
+						}
+						cs.setObject(i+returnIndex, value, param.getType());
+					}
+					for(int i=1; i<=sizeOut; i++){
+						ProcedureParam param = outputs.get(i-1);
+						if(null == param.getValue()){
+							cs.registerOutParameter(i+sizeIn+returnIndex, param.getType());
+						}else{
+							cs.setObject(i+sizeIn+returnIndex, param.getValue(), param.getType());
+						}
+					}
+					cs.execute();
+					if(procedure.hasReturn()){
+						result.add(cs.getObject(1));
+					}
+					if(sizeOut > 0){
+						//注册输出参数
+						for(int i=1; i<=sizeOut; i++){
+							final Object output = cs.getObject(sizeIn+returnIndex+i);
+							result.add(output);
+						}
+					}
+					return result;
+				}
+			});
+
+			procedure.setResult(list);
+			result = true;
+			if(null != listener){
+				listener.afterExecute(procedure, result);
+			}
+			if(showSQL){
+				log.warn("{}[执行耗时:{}ms]",random,System.currentTimeMillis()-fr);
+				log.warn("{}[输出参数:{}]",random,list);
+>>>>>>> origin/master
 			}
 		}catch(Exception e){
 			result = false;
@@ -946,7 +1104,11 @@ public class AnylineDaoImpl implements AnylineDao {
 		DataSet set = null;
 		try{
 			if(null != listener){
+<<<<<<< HEAD
 				listener.beforeQuery(this,procedure);
+=======
+				listener.beforeQuery(procedure);
+>>>>>>> origin/master
 			}
 			set = (DataSet)getJdbc().execute(new CallableStatementCreator(){
 				public CallableStatement createCallableStatement(Connection conn) throws SQLException {
@@ -1010,7 +1172,11 @@ public class AnylineDaoImpl implements AnylineDao {
 				log.warn("{}[执行耗时:{}ms]", random,System.currentTimeMillis() - fr);
 			}
 			if(null != listener){
+<<<<<<< HEAD
 				listener.afterQuery(this,procedure, set);
+=======
+				listener.afterQuery(procedure, set);
+>>>>>>> origin/master
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -1079,6 +1245,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			log.warn("{}[参数:{}]",random,paramLogFormat(values));
 		}
 		try{
+<<<<<<< HEAD
 			boolean listenerResult = true;
 			if(null != listener){
 				listenerResult = listener.beforeDelete(this,run);
@@ -1086,6 +1253,12 @@ public class AnylineDaoImpl implements AnylineDao {
 			if(listenerResult) {
 				result = getJdbc().update(sql, values.toArray());
 
+=======
+			if(null != listener){
+				listener.beforeDelete(run);
+			}
+			result = getJdbc().update(sql,values.toArray());
+>>>>>>> origin/master
 //			result = getJdbc().update(
 //	            new PreparedStatementCreator() {
 //	                public PreparedStatement createPreparedStatement(Connection con) throws SQLException
@@ -1100,6 +1273,7 @@ public class AnylineDaoImpl implements AnylineDao {
 //	                    return ps;
 //	                }
 //	            });
+<<<<<<< HEAD
 				if (showSQL) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, System.currentTimeMillis() - fr, result);
 				}
@@ -1107,6 +1281,14 @@ public class AnylineDaoImpl implements AnylineDao {
 				if(null != listener){
 					listener.afterDelete(this,run, result);
 				}
+=======
+			if(showSQL){
+				log.warn("{}[执行耗时:{}ms][影响行数:{}]",random,System.currentTimeMillis()-fr,result);
+			}
+			result = 1;
+			if(null != listener){
+				listener.afterDelete(run, result);
+>>>>>>> origin/master
 			}
 		}catch(Exception e){
 			log.error("删除异常:" +e);
