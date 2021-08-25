@@ -597,18 +597,21 @@ public class AnylineController extends AbstractBasicController {
 	 * @param encrypt  encrypt
 	 * @return return
 	 */ 
-	protected String success(Object data, boolean encrypt) { 
+	protected String success(Object data, boolean encrypt) {
+		String code = ConfigTable.getString("HTTP_SUCCESS_CODE", "200");
 		if(encrypt && null != data){ 
-			return result("200",true,DESUtil.encryptParamValue(data.toString()),null);
+			return result(code,true,DESUtil.encryptParamValue(data.toString()),null);
 		} 
-		return result("200",true, data, null);
+		return result(code,true, data, null);
 	}
 
 	protected String success(Object data) {
-		return result("200",true, data, null);
+		String code = ConfigTable.getString("HTTP_SUCCESS_CODE", "200");
+		return result(code,true, data, null);
 	}
 	protected String success(Object ... data) {
-		return result("200",true, data, null);
+		String code = ConfigTable.getString("HTTP_SUCCESS_CODE", "200");
+		return result(code,true, data, null);
 	}
 	/** 
 	 * AJAX分页时调用  
