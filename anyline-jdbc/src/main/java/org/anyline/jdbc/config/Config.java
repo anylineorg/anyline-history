@@ -69,8 +69,9 @@ public interface Config extends Serializable {
  
 	public boolean isRequire() ; 
 	public boolean isStrictRequired(); 
-	public void setRequire(boolean require) ; 
- 
+	public void setRequire(boolean require) ;
+	public void setStrictRequired(boolean require);
+
 	public String getJoin() ; 
  
 	public void setJoin(String join) ; 

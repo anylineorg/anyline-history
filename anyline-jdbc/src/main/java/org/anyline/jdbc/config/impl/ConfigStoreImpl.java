@@ -201,12 +201,23 @@ public class ConfigStoreImpl implements ConfigStore, Serializable {
 	@Override
 	public ConfigStore addCondition(COMPARE_TYPE compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
 		Config conf = null;
+		boolean require = false;
+		boolean strictRequired = false;
 		if(null == prefix && var.contains(".")){
 			prefix = var.substring(0,var.indexOf("."));
 			var = var.substring(var.indexOf(".")+1,var.length());
 		}
 		if(overCondition){
 			conf = chain.getConfig(prefix,var, compare);
+		}
+		if(null != var){
+			if(var.startsWith("++")){
+				strictRequired = true;
+				var = var.substring(2);
+			}else if(var.startsWith("+")){
+				require = true;
+				var = var.substring(1);
+			}
 		}
 		if(null == conf){
 			conf = new ConfigImpl();
@@ -216,6 +227,8 @@ public class ConfigStoreImpl implements ConfigStore, Serializable {
 		}
 		conf.setPrefix(prefix);
 		conf.setVariable(var);
+		conf.setRequire(require);
+		conf.setStrictRequired(strictRequired);
 		if(overValue){
 			conf.setValue(value);
 		}else{
