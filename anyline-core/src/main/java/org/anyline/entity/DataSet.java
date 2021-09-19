@@ -498,7 +498,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
-     * distinct
+     * 根据keys去重
      *
      * @param keys keys
      * @return DataSet
@@ -845,6 +845,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return set;
     }
 
+    /**
+     * 合计
+     * @param begin 开始
+     * @param end 结束
+     * @param key key
+     * @return
+     */
     public BigDecimal sum(int begin, int end, String key) {
         BigDecimal result = BigDecimal.ZERO;
         int size = rows.size();
@@ -867,7 +874,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
-     * sum
+     * 多列合计
      *
      * @param keys keys
      * @return return
@@ -890,7 +897,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
-     * avg
+     * 多列平均值
      *
      * @param keys keys
      * @return return
@@ -1120,7 +1127,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param key       key
      * @param connector connector
-     * @return return
+     * @return return v1,v2,v3
      */
     public String concat(String key, String connector) {
         return BasicUtil.concat(getStrings(key), connector);
@@ -1130,10 +1137,25 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return BasicUtil.concat(getNvlStrings(key), connector);
     }
 
+
+    /**
+     * 合并key例的值 以connector连接(不取null值)
+     *
+     * @param key       key
+     * @param connector connector
+     * @return return v1,v2,v3
+     */
     public String concatWithoutNull(String key, String connector) {
         return BasicUtil.concat(getStringsWithoutNull(key), connector);
     }
 
+    /**
+     * 合并key例的值 以connector连接(不取空值)
+     *
+     * @param key       key
+     * @param connector connector
+     * @return return v1,v2,v3
+     */
     public String concatWithoutEmpty(String key, String connector) {
         return BasicUtil.concat(getStringsWithoutEmpty(key), connector);
     }
@@ -1683,6 +1705,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
+    /**
+     * 合并
+     * @param set DataSet
+     * @param keys 根据keys去重
+     * @return
+     */
     public DataSet union(DataSet set, String... keys) {
         DataSet result = new DataSet();
         if (null != rows) {
@@ -1706,7 +1734,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
-     * 合并
+     * 合并合并不去重
      *
      * @param set set
      * @return return
@@ -2535,6 +2563,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /* ************************* 类sql操作 ************************************** */
+
+    /**
+     * 随机取一行
+     * @return DataRow
+     */
     public DataRow random() {
         DataRow row = null;
         int size = size();
@@ -2544,6 +2577,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return row;
     }
 
+    /**
+     * 随机取qty行
+     * @param qty 行数
+     * @return DataSet
+     */
     public DataSet randoms(int qty) {
         DataSet set = new DataSet();
         int size = size();
@@ -2567,6 +2605,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return set;
     }
 
+    /**
+     * 随机取min到max行
+     * @param min min
+     * @param max max
+     * @return DataSet
+     */
     public DataSet randoms(int min, int max) {
         int qty = BasicUtil.getRandomNumber(min, max);
         return randoms(qty);
@@ -2576,6 +2620,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return distinct(keys);
     }
 
+    /**
+     * 根据正则提取集合
+     * @param key key
+     * @param regex 正则
+     * @param mode 匹配方式
+     * @return DataSet
+     */
     public DataSet regex(String key, String regex, Regular.MATCH_MODE mode) {
         DataSet set = new DataSet();
         String tmpValue;
